@@ -2,41 +2,62 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LinesCreator : MonoBehaviour
+public class LinesCreator : MonoSingleton<LinesCreator>
 {
     [SerializeField]
     Line topLineItems;
     [SerializeField]
     Line bottomLineItems;
-    public GameObject Lines;
-    Vector3 instanPosBottom = new Vector3(1000,-1000,0);
-    Vector3 instanPosTop = new Vector3(1000,1000,0);
-    // Start is called before the first frame update
+
+    float line_space = 1.5f;
+    float current_time = 1;
+    float instanPosX = 7f;
     private void Start()
     {
-        Debug.Log("Screen.height:"+Screen.height);
-        for(int i =0;i<50;i++)
+        //Debug.Log("Screen.height:"+Screen.height);
+        //for(int i =0;i<10;i++)
+        //{
+        //    float middleHeight = Random.Range(300, 400);
+        //    CreateLine(middleHeight);
+        //}
+        current_time = line_space;
+    }
+    private void Update()
+    {
+        if (GameManager.Instance.Current_state == GameManager.GAMESTATE.PLAYING)
         {
-            float middleHeight = Random.Range(300, 400);
-            CreateLine(middleHeight, i);
+            current_time -= Time.deltaTime;
+            if (current_time <= 0)
+            {
+                float middleHeight = Random.Range(400 - GameManager.Instance.GetLevel() * 10, 500 - GameManager.Instance.GetLevel() * 10);
+                CreateLine(middleHeight);
+                current_time = line_space;
+            }
         }
     }
-    void CreateLine(float middleHeight, int index)
+    void CreateLine(float middleHeight)
     {
         float lineTopHeight = Random.Range(200,Screen.height - middleHeight);
-        CreateLineTop(lineTopHeight, index);
-        CreateLineBottom(Screen.height - middleHeight- lineTopHeight, index);
+        CreateLineTop(lineTopHeight);
+        CreateLineBottom(Screen.height - middleHeight- lineTopHeight);
     }
-    void CreateLineBottom(float height, int index)
+    void CreateLineBottom(float height)
     {
-        Line line = Instantiate(bottomLineItems, Lines.transform) as Line;
-        Debug.Log(line.transform.position);
-        line.SetupLine(150, height, line.transform.position.x+(index * GameManager.Instance.GetLineSpace()), true);
+        Line line = Instantiate(bottomLineItems, gameObject.transform) as Line;
+        //Debug.Log(line.transform.position);
+        line.SetupLine(150, height, instanPosX, true);
     }
-    void CreateLineTop(float height, int index)
+    void CreateLineTop(float height)
     {
-        Line line = Instantiate(topLineItems, Lines.transform) as Line;
-        Debug.Log(line.transform.position);
-        line.SetupLine(150, height, line.transform.position.x+ (index * GameManager.Instance.GetLineSpace()));
+        Line line = Instantiate(topLineItems, gameObject.transform) as Line;
+        //Debug.Log(line.transform.position);
+        line.SetupLine(150, height, instanPosX);
+    }
+    public void DestroyAllLine()
+    {
+        foreach (Transform child in gameObject.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
     }
 }

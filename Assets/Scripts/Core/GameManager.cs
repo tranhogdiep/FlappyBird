@@ -6,8 +6,8 @@ using UnityEngine;
 public class GameManager : MonoSingleton<GameManager>
 {
     float speed = 3f;
-    float line_space = 5f;
     int point = 0;
+    int level = 1;
     public enum GAMESTATE { WAITING, PLAYING, END};
     private GAMESTATE current_state = GAMESTATE.WAITING;
     public GAMESTATE Current_state
@@ -15,26 +15,44 @@ public class GameManager : MonoSingleton<GameManager>
         get { return current_state; }
         set {
             current_state = value;
-            UIManager.Instance.ChangeState(current_state);
+            switch (current_state)
+            {
+                case GameManager.GAMESTATE.PLAYING:
+                    UIManager.Instance.PlayGame();
+                    break;
+                case GameManager.GAMESTATE.WAITING:
+                    MainPlayer.Instance.LockMove(true);
+                    LinesCreator.Instance.DestroyAllLine();
+                    UIManager.Instance.Home();
+                    break;
+                case GameManager.GAMESTATE.END:
+                    this.EndGame();
+                    UIManager.Instance.EndGame();
+                    break;
+                default:
+                    Debug.LogError("State node found");
+                    break;
+            }
         }
     }
     public float GetSpeed() { return speed; }
-    public float GetLineSpace() { return line_space; }
+    public float GetLevel() { return level; }
     // Start is called before the first frame update
     void Start()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        Current_state = GAMESTATE.WAITING;
     }
 
     internal void AddPoint()
     {
         point += 1;
         UIManager.Instance.SetPoint(point);
+    }
+    internal int GetPoint(){ return point; }
+    void EndGame()
+    {
+        if(point >= StorageManager.GetBestPoint())
+            StorageManager.SetBestPoint(point);
+
     }
 }

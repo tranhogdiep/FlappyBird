@@ -2,26 +2,36 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class MainPlayer : MonoBehaviour
+public class MainPlayer : MonoSingleton<MainPlayer>
 {
+    public Image imgCharacter;
+    public Sprite redCha;
+    public Sprite blueCha;
+    public Sprite yellowCha;
     Rigidbody2D rigi;
     float force = 5f;
     void Start()
     {
         rigi = gameObject.GetComponent<Rigidbody2D>();
         LockMove(true);
+
+        SetCharacter(StorageManager.GetBird());
     }
 
     void Update()
     {
 
     }
-    void LockMove(bool isLock)
+    public void LockMove(bool isLock)
     {
         if(isLock)
         {
-            rigi.constraints = RigidbodyConstraints2D.FreezeAll;
+            this.gameObject.transform.position = Vector3.zero;
+            this.gameObject.transform.rotation = Quaternion.identity;
+            if(rigi)
+                rigi.constraints = RigidbodyConstraints2D.FreezeAll;
         }
         else
         {
@@ -32,20 +42,37 @@ public class MainPlayer : MonoBehaviour
     {
         if (GameManager.Instance.Current_state == GameManager.GAMESTATE.PLAYING)
             Movement();
+        else if (GameManager.Instance.Current_state == GameManager.GAMESTATE.END)
+        {
+
+        }
         else
         {
-            WaitForStartGame();
+            //WaitForStartGame();
         }
     }
 
-    private void WaitForStartGame()
+    public void WaitForStartGame()
     {
-        if (Input.GetMouseButtonDown(0))
+        Debug.Log("StartGame");
+        LockMove(false);
+        rigi.velocity = new Vector2(0, force);
+        GameManager.Instance.Current_state = GameManager.GAMESTATE.PLAYING;
+    }
+
+    internal void SetCharacter(StorageManager.BIRD character)
+    {
+        switch(character)
         {
-            Debug.Log("StartGame");
-            LockMove(false);
-            rigi.velocity = new Vector2(0, force);
-            GameManager.Instance.Current_state = GameManager.GAMESTATE.PLAYING;
+            case StorageManager.BIRD.RED:
+                imgCharacter.sprite = redCha;
+                break;
+            case StorageManager.BIRD.BLUE:
+                imgCharacter.sprite = blueCha;
+                break;
+            case StorageManager.BIRD.YELLOW:
+                imgCharacter.sprite = yellowCha;
+                break;
         }
     }
 
@@ -54,7 +81,7 @@ public class MainPlayer : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log("Touch");
+            //Debug.Log("Touch");
             //rigi.AddForce(transform.up, ForceMode2D.Force);
             rigi.velocity = new Vector2(0, force);
         }
@@ -75,7 +102,8 @@ public class MainPlayer : MonoBehaviour
     {
         if (collision.gameObject.tag == GameObjectTag.LINE)
         {
-            Debug.Log("gameOver");
+            //Debug.Log("gameOver");
+            GameManager.Instance.Current_state = GameManager.GAMESTATE.END;
         }
     }
 }

@@ -17,9 +17,9 @@ public class Line : MonoBehaviour
     }
     public void SetupLine(float _width = 150, float _height = 500, float _pos_x = 1000, bool addPoint= false)
     {
-        Debug.Log("SetupLine: high:"+ _height+" pos:"+ _pos_x);
+        //Debug.Log("SetupLine: high:"+ _height+" pos:"+ _pos_x);
         temp_pos = gameObject.transform.position;
-        temp_pos.x = _pos_x+10;
+        temp_pos.x = _pos_x;
         //object width, height
         gameObject.transform.position = temp_pos;
         rectTrans.sizeDelta = new Vector2(_width, _height);
@@ -35,6 +35,8 @@ public class Line : MonoBehaviour
         CheckPoint();
         if(GameManager.Instance.Current_state==GameManager.GAMESTATE.PLAYING)
             MoveMent();
+        if (gameObject.transform.position.x <= -10)
+            GameObject.Destroy(this.gameObject);
     }
 
     private void CheckPoint()
@@ -57,4 +59,13 @@ public class Line : MonoBehaviour
         temp_pos.x -= GameManager.Instance.GetSpeed() * Time.deltaTime;
         gameObject.transform.position = temp_pos;
     }
+    //private void OnCollisionEnter2D(Collision2D collision)
+    //{
+    //    Debug.Log("Destroy Line:"+ collision.gameObject.name);
+    //    if (collision.gameObject.tag == GameObjectTag.END_POINT)
+    //    {
+    //        Debug.Log("Destroy Line");
+    //        GameObject.Destroy(this.gameObject);
+    //    }
+    //}
 }

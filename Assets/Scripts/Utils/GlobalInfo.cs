@@ -13,5 +13,12 @@ public static class GameObjectTag
 {
     public const string
         MAIN_PLAYER = "Player",
-        LINE = "Line";
+        LINE = "Line",
+        END_POINT = "EndPoint";
+}
+public static class GameString
+{
+    public const string
+        GAME_OVER = "Game Over",
+        CHOOSE_BIRD = "Choose Bird";
 }

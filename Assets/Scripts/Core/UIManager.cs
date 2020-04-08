@@ -11,8 +11,11 @@ public class UIManager : MonoSingleton<UIManager>
 
     public GameObject homeUI;
     public GameObject playingUI;
-    public GameObject gameOverPopup;
 
+    public GameObject gameOverPopup;
+    public GameObject chooseBirdPopup;
+
+    Vector3 hidePos = new Vector3(0, -10, 0);
     List<GameObject> waitForHide;
     private void Start()
     {
@@ -23,27 +26,22 @@ public class UIManager : MonoSingleton<UIManager>
     {
         txtPoint.text = point.ToString();
     }
-    public void ChangeState(GameManager.GAMESTATE state)
+    public void OnClickBackToHome()
     {
-        switch(state)
-        {
-            case GameManager.GAMESTATE.PLAYING:
-                PlayGame();
-                break;
-            case GameManager.GAMESTATE.WAITING:
-                Home();
-                break;
-            case GameManager.GAMESTATE.END:
-                EndGame();
-                break;
-            default:
-                Debug.LogError("State node found");
-                break;
-        }
+        GameManager.Instance.Current_state = GameManager.GAMESTATE.WAITING;
+    }
+    public void OnClickChooseBird()
+    {
+        ShowPopup(chooseBirdPopup, GameString.CHOOSE_BIRD);
+    }
+    public void OnClickPlayerGame()
+    {
+        MainPlayer.Instance.WaitForStartGame();
     }
 
-    private void Home()
+    public void Home()
     {
+        SetPoint(0);
         HidePanel(playingUI);
         HidePanel(gameOverPopup);
         ShowPanel(homeUI);
@@ -57,29 +55,37 @@ public class UIManager : MonoSingleton<UIManager>
     }
     public void EndGame()
     {
-        ShowPanel(gameOverPopup);
+        ShowPopup(gameOverPopup, GameString.GAME_OVER);
     }
     void HidePanel(GameObject panel)
     {
-        waitForHide.Add(panel);
+        //panel.transform.Translate(hidePos);
+        //waitForHide.Add(panel);
+        panel.SetActive(false);
     }
     void ShowPanel(GameObject panel)
     {
+        //panel.transform.Translate(Vector3.zero);
         panel.SetActive(true);
+    }
+    void ShowPopup(GameObject popup, string tile)
+    {
+        popup.SetActive(true);
+        popup.GetComponent<Popup>().ShowPopup(tile);
     }
     private void Update()
     {
-        if(waitForHide.Count>0)
-        {
-            foreach(GameObject obj in waitForHide)
-            {
-                obj.transform.localScale = new Vector3(obj.transform.localScale.x, obj.transform.localScale.y-0.1f, obj.transform.localScale.z);
-                if(obj.transform.localScale.y<=0)
-                {
-                    obj.transform.localScale = new Vector3(obj.transform.localScale.x, 0, obj.transform.localScale.z);
-                    waitForHide.Remove(obj);
-                }
-            }
-        }
+        //if(waitForHide.Count>0)
+        //{
+        //    foreach(GameObject obj in waitForHide)
+        //    {
+        //        obj.transform.localScale = new Vector3(obj.transform.localScale.x, obj.transform.localScale.y-0.1f, obj.transform.localScale.z);
+        //        if(obj.transform.localScale.y<=0)
+        //        {
+        //            obj.transform.localScale = new Vector3(obj.transform.localScale.x, 0, obj.transform.localScale.z);
+        //            waitForHide.Remove(obj);
+        //        }
+        //    }
+        //}
     }
 }

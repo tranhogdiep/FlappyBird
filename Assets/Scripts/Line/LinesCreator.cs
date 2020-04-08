@@ -31,12 +31,12 @@ public class LinesCreator : MonoBehaviour
     {
         Line line = Instantiate(bottomLineItems, Lines.transform) as Line;
         Debug.Log(line.transform.position);
-        line.SetupLine(150, height, line.transform.position.x+(index * GameManager.Instance.GetLineSpace()));
+        line.SetupLine(150, height, line.transform.position.x+(index * GameManager.Instance.GetLineSpace()), true);
     }
     void CreateLineTop(float height, int index)
     {
         Line line = Instantiate(topLineItems, Lines.transform) as Line;
         Debug.Log(line.transform.position);
-        line.SetupLine(150, height, line.transform.position.x + (index * GameManager.Instance.GetLineSpace()));
+        line.SetupLine(150, height, line.transform.position.x+ (index * GameManager.Instance.GetLineSpace()));
     }
 }

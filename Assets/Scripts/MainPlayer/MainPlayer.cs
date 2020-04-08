@@ -12,6 +12,8 @@ public class MainPlayer : MonoSingleton<MainPlayer>
     public Sprite yellowCha;
     Rigidbody2D rigi;
     float force = 5f;
+
+    bool movingBack = false;
     void Start()
     {
         rigi = gameObject.GetComponent<Rigidbody2D>();
@@ -20,10 +22,6 @@ public class MainPlayer : MonoSingleton<MainPlayer>
         SetCharacter(StorageManager.GetBird());
     }
 
-    void Update()
-    {
-
-    }
     public void LockMove(bool isLock)
     {
         if(isLock)
@@ -35,10 +33,10 @@ public class MainPlayer : MonoSingleton<MainPlayer>
         }
         else
         {
-            rigi.constraints = RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePositionX;
+            rigi.constraints = RigidbodyConstraints2D.FreezeRotation;// | RigidbodyConstraints2D.FreezePositionX;
         }
     }
-    private void FixedUpdate()
+    private void Update()
     {
         if (GameManager.Instance.Current_state == GameManager.GAMESTATE.PLAYING)
             Movement();
@@ -58,6 +56,7 @@ public class MainPlayer : MonoSingleton<MainPlayer>
         LockMove(false);
         rigi.velocity = new Vector2(0, force);
         GameManager.Instance.Current_state = GameManager.GAMESTATE.PLAYING;
+        movingBack = true;
     }
 
     internal void SetCharacter(StorageManager.BIRD character)
@@ -84,6 +83,16 @@ public class MainPlayer : MonoSingleton<MainPlayer>
             //Debug.Log("Touch");
             //rigi.AddForce(transform.up, ForceMode2D.Force);
             rigi.velocity = new Vector2(0, force);
+        }
+        if(movingBack)
+        {
+            Vector3 temPos = transform.position;
+            temPos.x -= 0.03f;
+            transform.position = temPos;
+            if(transform.position.x <=-1f)
+            {
+                movingBack = false;
+            }
         }
         if(rigi.velocity.y > 0)
         {

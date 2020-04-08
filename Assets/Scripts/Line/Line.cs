@@ -45,6 +45,7 @@ public class Line : MonoBehaviour
         {
             if(transform.position.x<=0)
             {
+                SoundsManager.Instance.PlaySound(SoundsManager.SOUNDS.GET_SCORE);
                 GameManager.Instance.AddPoint();
                 isAddedPoint = true;
             }

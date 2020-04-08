@@ -28,10 +28,12 @@ public class UIManager : MonoSingleton<UIManager>
     }
     public void OnClickBackToHome()
     {
+        SoundsManager.Instance.PlaySound(SoundsManager.SOUNDS.TAB_BOTTON);
         GameManager.Instance.Current_state = GameManager.GAMESTATE.WAITING;
     }
     public void OnClickChooseBird()
     {
+        SoundsManager.Instance.PlaySound(SoundsManager.SOUNDS.TAB_BOTTON);
         ShowPopup(chooseBirdPopup, GameString.CHOOSE_BIRD);
     }
     public void OnClickPlayerGame()

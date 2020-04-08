@@ -27,22 +27,26 @@ public class ChooseBirdPopup : Popup
     }
     public void OnClickRedBird()
     {
+        SoundsManager.Instance.PlaySound(SoundsManager.SOUNDS.TAB_BOTTON);
         StorageManager.SetBird(StorageManager.BIRD.RED);
         character = StorageManager.BIRD.RED;
     }
     public void OnClickBlueBird()
     {
+        SoundsManager.Instance.PlaySound(SoundsManager.SOUNDS.TAB_BOTTON);
         StorageManager.SetBird(StorageManager.BIRD.BLUE);
         character = StorageManager.BIRD.BLUE;
     }
     public void OnClickYellowBird()
     {
+        SoundsManager.Instance.PlaySound(SoundsManager.SOUNDS.TAB_BOTTON);
         StorageManager.SetBird(StorageManager.BIRD.YELLOW);
         character = StorageManager.BIRD.YELLOW;
     }
     public override void HidePopup()
     {
         base.HidePopup();
+        SoundsManager.Instance.PlaySound(SoundsManager.SOUNDS.TAB_BOTTON);
         MainPlayer.Instance.SetCharacter(character);
     }
 }
